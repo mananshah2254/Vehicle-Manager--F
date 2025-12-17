@@ -38,12 +38,18 @@ class ApiService {
   }
 
   static Future<Map<String, dynamic>> _handleResponse(http.Response response) async {
-    final body = json.decode(response.body);
-    
-    if (response.statusCode >= 200 && response.statusCode < 300) {
-      return body;
-    } else {
-      throw Exception(body['error'] ?? 'Request failed');
+    try {
+      final body = json.decode(response.body);
+      
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        return body;
+      } else {
+        final errorMessage = body['error'] ?? body['message'] ?? 'Request failed';
+        throw Exception(errorMessage);
+      }
+    } catch (e) {
+      if (e is Exception) rethrow;
+      throw Exception('Failed to parse response: ${response.body}');
     }
   }
 

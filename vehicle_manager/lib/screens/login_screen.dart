@@ -47,14 +47,16 @@ class _LoginScreenState extends State<LoginScreen> {
         MaterialPageRoute(builder: (_) => const DashboardScreen()),
       );
     } else if (mounted) {
+      final errorMessage = AuthService.lastError ?? 'Invalid email or password';
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: const Text('Invalid email or password'),
+          content: Text(errorMessage),
           backgroundColor: Colors.red.shade50,
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8),
           ),
+          duration: const Duration(seconds: 4),
         ),
       );
     }

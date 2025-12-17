@@ -407,14 +407,20 @@ flutter run -d chrome  # For testing
 
 To make your app accessible from other devices using the EC2 public IP:
 
-**See `DEPLOY_WEB_APP.md` for complete instructions.**
+**📖 See `STEP_BY_STEP_DEPLOY.md` for detailed step-by-step instructions with exact commands!**
 
-Quick steps:
-1. Build Flutter web: `flutter build web --release`
-2. Install Nginx on EC2: `sudo apt install nginx`
-3. Copy build files to `/var/www/vehicle_manager/`
-4. Configure Nginx to serve app and proxy API requests
-5. Access from any device: `http://YOUR_EC2_IP`
+**Quick overview:**
+1. **Build Flutter web** (local machine): `flutter build web --release`
+2. **Install Nginx on EC2**: `sudo apt install nginx`
+3. **Create directory**: `sudo mkdir -p /var/www/vehicle_manager`
+4. **Upload files**: `scp -i key.pem -r build/web/* ubuntu@EC2_IP:/var/www/vehicle_manager/`
+5. **Configure Nginx**: Create config file at `/etc/nginx/sites-available/vehicle-manager`
+6. **Enable site**: `sudo ln -s /etc/nginx/sites-available/vehicle-manager /etc/nginx/sites-enabled/`
+7. **Reload Nginx**: `sudo systemctl reload nginx`
+8. **Update Security Group**: Allow HTTP (port 80) in AWS Console
+9. **Access**: `http://YOUR_EC2_IP` from any device!
+
+**For complete detailed instructions with all commands, see `STEP_BY_STEP_DEPLOY.md`**
 
 ### Step 11: Test the Application
 

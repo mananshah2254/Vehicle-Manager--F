@@ -55,14 +55,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
         );
       }
     } else if (mounted) {
+      final errorMessage = AuthService.lastError ?? 'Email already exists';
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: const Text('Email already exists'),
+          content: Text(errorMessage),
           backgroundColor: Colors.red.shade50,
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8),
           ),
+          duration: const Duration(seconds: 4),
         ),
       );
     }
