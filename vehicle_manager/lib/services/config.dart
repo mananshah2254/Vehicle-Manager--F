@@ -1,13 +1,18 @@
 class ApiConfig {
-  // Update this with your EC2 server URL
-  // For local development: 'http://localhost:3000/api'
-  // For EC2: 'http://YOUR_EC2_IP:3000/api' or 'http://YOUR_DOMAIN/api'
-  static const String baseUrl = 'http://localhost:3000/api';
+  // For production deployment on EC2 with Nginx:
+  // Use relative path '/api' when app is served from same domain
+  // Nginx will proxy /api requests to the backend on port 3000
+  static const String baseUrl = '/api';
   
-  // Helper method to update base URL at runtime if needed
+  // Alternative: Use full URL if needed
+  // Replace YOUR_EC2_IP with your actual EC2 public IP
+  // Example: 'http://54.123.45.67/api'
+  // static const String baseUrl = 'http://YOUR_EC2_IP/api';
+  
+  // For local development (if testing locally):
+  // static const String baseUrl = 'http://localhost:3000/api';
+  
   static String getBaseUrl() {
-    // You can add environment-based URL selection here
     return baseUrl;
   }
 }
-

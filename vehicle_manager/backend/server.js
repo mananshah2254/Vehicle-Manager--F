@@ -230,8 +230,9 @@ app.get('/health', (req, res) => {
 
 // Initialize database and start server
 initDatabase().then(() => {
-  app.listen(PORT, () => {
+  app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server running on port ${PORT}`);
+    console.log(`Accessible at http://0.0.0.0:${PORT}`);
   });
 });
 

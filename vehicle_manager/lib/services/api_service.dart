@@ -47,10 +47,20 @@ class ApiService {
     }
   }
 
+  static Uri _buildUri(String path) {
+    // If baseUrl starts with '/', it's a relative path - use current origin
+    // If baseUrl starts with 'http', it's absolute - use as is
+    if (baseUrl.startsWith('/')) {
+      return Uri.parse('$baseUrl$path');
+    } else {
+      return Uri.parse('$baseUrl$path');
+    }
+  }
+
   // Auth endpoints
   static Future<Map<String, dynamic>> signUp(String email, String password) async {
     final response = await http.post(
-      Uri.parse('$baseUrl/auth/signup'),
+      _buildUri('/auth/signup'),
       headers: _getHeaders(includeAuth: false),
       body: json.encode({'email': email, 'password': password}),
     );
@@ -64,7 +74,7 @@ class ApiService {
 
   static Future<Map<String, dynamic>> login(String email, String password) async {
     final response = await http.post(
-      Uri.parse('$baseUrl/auth/login'),
+      _buildUri('/auth/login'),
       headers: _getHeaders(includeAuth: false),
       body: json.encode({'email': email, 'password': password}),
     );
@@ -80,7 +90,7 @@ class ApiService {
   static Future<List<dynamic>> getVehicles() async {
     await getToken(); // Ensure token is loaded
     final response = await http.get(
-      Uri.parse('$baseUrl/vehicles'),
+      _buildUri('/vehicles'),
       headers: _getHeaders(),
     );
     
@@ -96,7 +106,7 @@ class ApiService {
   static Future<void> addVehicle(Map<String, dynamic> vehicle) async {
     await getToken();
     final response = await http.post(
-      Uri.parse('$baseUrl/vehicles'),
+      _buildUri('/vehicles'),
       headers: _getHeaders(),
       body: json.encode(vehicle),
     );
@@ -107,7 +117,7 @@ class ApiService {
   static Future<void> updateVehicle(String id, Map<String, dynamic> vehicle) async {
     await getToken();
     final response = await http.put(
-      Uri.parse('$baseUrl/vehicles/$id'),
+      _buildUri('/vehicles/$id'),
       headers: _getHeaders(),
       body: json.encode(vehicle),
     );
@@ -118,7 +128,7 @@ class ApiService {
   static Future<void> deleteVehicle(String id) async {
     await getToken();
     final response = await http.delete(
-      Uri.parse('$baseUrl/vehicles/$id'),
+      _buildUri('/vehicles/$id'),
       headers: _getHeaders(),
     );
     

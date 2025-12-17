@@ -342,14 +342,38 @@ vehicle_manager_db     Up 5 minutes    0.0.0.0:5432->5432/tcp
 ### Step 8: Verify Deployment
 
 ```bash
-# Test API health endpoint
+# Test API health endpoint (from within EC2)
 curl http://localhost:3000/health
 
 # Should return: {"status":"ok"}
-
-# Test from your local machine (replace with your EC2 IP)
-curl http://YOUR_EC2_IP:3000/health
 ```
+
+### Step 8b: Fix Connection Issues (IMPORTANT!)
+
+If you get timeout when accessing from your local machine, check:
+
+**1. Security Group Rules (MOST COMMON ISSUE):**
+   - Go to AWS Console → EC2 → Security Groups
+   - Select your instance's security group
+   - Edit inbound rules
+   - Add: Custom TCP, Port 3000, Source: My IP (or 0.0.0.0/0 for testing)
+
+**2. EC2 Firewall:**
+   ```bash
+   sudo ufw allow 3000/tcp
+   ```
+
+**3. Verify containers are running:**
+   ```bash
+   sudo docker-compose ps
+   ```
+
+**4. Test from your local machine:**
+   ```bash
+   curl http://YOUR_EC2_IP:3000/health
+   ```
+
+**See TROUBLESHOOTING.md for detailed troubleshooting steps.**
 
 ### Step 9: Update Flutter App Configuration
 
@@ -379,12 +403,30 @@ flutter build web  # For web
 flutter run -d chrome  # For testing
 ```
 
-### Step 10: Test the Application
+### Step 10: Deploy Flutter Web App (Make Accessible from Any Device)
 
-1. Open your Flutter app
-2. Sign up with a new account
-3. Add a vehicle
-4. Verify data is saved in database:
+To make your app accessible from other devices using the EC2 public IP:
+
+**See `DEPLOY_WEB_APP.md` for complete instructions.**
+
+Quick steps:
+1. Build Flutter web: `flutter build web --release`
+2. Install Nginx on EC2: `sudo apt install nginx`
+3. Copy build files to `/var/www/vehicle_manager/`
+4. Configure Nginx to serve app and proxy API requests
+5. Access from any device: `http://YOUR_EC2_IP`
+
+### Step 11: Test the Application
+
+1. **Access web app:**
+   - From any device: Open browser → `http://YOUR_EC2_IP`
+   - Or test locally on EC2: `http://localhost`
+
+2. **Sign up with a new account**
+
+3. **Add a vehicle**
+
+4. **Verify data is saved in database:**
 
 ```bash
 # On EC2, connect to database
@@ -397,6 +439,10 @@ SELECT * FROM vehicles;
 # Exit
 \q
 ```
+
+5. **Share with others:**
+   - Share the URL: `http://YOUR_EC2_IP`
+   - Anyone can access it from any device!
 
 ## 🔧 Useful Management Commands
 
